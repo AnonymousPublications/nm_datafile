@@ -26,8 +26,9 @@ describe "nm_datafile" do
     nmd_shippable = NmDatafile.new(:shippable_file, *@sample_data)
     
     str = nmd_shippable.save_to_string
+
+    # TODO: actually test data and make more data in @sample_data
     
-    binding.pry
     
   end
 
