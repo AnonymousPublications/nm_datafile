@@ -1,25 +1,26 @@
 module NmDatafile
+
   # This class describes a way for AP to convert data into a portable format 
   # (zip_file.nmd).  nms == aNonyMousDatafile 
   #
   #   To create a new file, you first must define a schema.  As of right now, 
-  # there are two public schemas.  As defined in these schemas, NMDatafiles 
+  # there are two public schemas.  As defined in these schemas, NmDatafiles 
   # consist of collections of objects, and individual objects... eg
   # An instance might have nmd.important_numbers which is an array of number, 
   # whereas it might also have a data_object, nmd#stupidest_number which is a
   # single number.  
   #
-  #   So to create an NMDatafile, do
-  # `NMDatafile.new(:shippable_file, sales, line_items, addresses, rfsb)`
+  #   So to create an NmDatafile, do
+  # `NmDatafile.new(:shippable_file, sales, line_items, addresses, rfsb)`
   # that will work if you have a schema that has 3 data_collections specified
   # and 1 data_object specified in the schema named :shippable_file.  
   #
-  #   Using NMDatafiles allows you access to utility functions such as
+  #   Using NmDatafiles allows you access to utility functions such as
   #     - #save_to_string
   #     - #save_to_file
   #     - tons of testing methods
   #
-  #   The NMDatafile is just a zip, but it's a password protected zip, and 
+  #   The NmDatafile is just a zip, but it's a password protected zip, and 
   # it can also be obfuscated to confuse the feds.  
   #
   # Creating a new APDatafile means creates, in memory, a way to:
@@ -32,7 +33,7 @@ module NmDatafile
   #  - Specify the version of the file
   #  - File can non-destructively corrupt itself so it doesn't look so much like a zip file to cryptographic analists
   #  - Object is responsive to what ever schema it's set to... so it will be able to do
-  #       shippable_file = NMDatafile.new(:shippable_file);  shippable_file.sales << Sale.new
+  #       shippable_file = NmDatafile.new(:shippable_file);  shippable_file.sales << Sale.new
   #  - loads data, nmd.load_data([sales, line_items, addresses, [ready_for_shipment_batch]])
   #  - loads variables nmd.load_data([sales, line_items, addresses, ready_for_shipment_batch])
 
@@ -62,9 +63,9 @@ module NmDatafile
   #
   # (rw) protected: bool, specifies whether the file is secured with PGP or if it's just a zip file
   #
-  # (m)  Load: loads a file into memory as an NMDatafile
+  # (m)  Load: loads a file into memory as an NmDatafile
   #
-  # (m)  load_data:  loads array of data into memory as an NMDatafile object
+  # (m)  load_data:  loads array of data into memory as an NmDatafile object
 
 
   # PRIVATE
@@ -92,13 +93,16 @@ module NmDatafile
     @@clear_text_path = "clear_text_protected_nmd" # used for using system calls to decrypt and encrypt using a zip password
     attr_reader :file_type, :password
     
+    extend Crypto
+    
+    
     
     
     ###############################
     # Loading and Dumping Methods #
     ###############################
     
-    # (m)  Load: loads a file into memory as an NMDatafile
+    # (m)  Load: loads a file into memory as an NmDatafile
     def self.Load(file_path)
       zip_data = File.read(file_path)
       LoadBinaryData(zip_data)
@@ -151,7 +155,7 @@ module NmDatafile
       @password = clean_decrypt_string(d["password"]) unless d["password"].nil?
     end
     
-    # (m)  load_data:  loads array of data into memory as an NMDatafile object
+    # (m)  load_data:  loads array of data into memory as an NmDatafile object
     # clears the data arrays so it's like reinitializing the whole file
     def load_data(*args)
       init_data_arrays  # wipes all preexisting data in @data_collections and @data_objects
@@ -202,6 +206,7 @@ module NmDatafile
       @password = password
     end
     
+    # TODO del me
     def version
       "0.0.0"
     end
@@ -298,17 +303,24 @@ module NmDatafile
       
     end
     
-
+    
+    
+    
+    # This method get's the temp directory.  If it's a rails
+    # app, that would be Rails.root/tmp, else just /tmp
+    def get_temp_directory
+      defined?(Rails) ? "#{Rails.root}/tmp" : "/tmp"
+    end
     
     ###############
     # zip methods #
     ###############
+    require 'zip'
     
     # hash consists of {file1: string_data}
     # output is a binary string representing a zip file of the entries specified
     def encode_datafiles_as_zip(hash_of_entries)
-      require 'zip'
-      temp_file = Tempfile.new(file_type.to_s, "#{Rails.root}/tmp")
+      temp_file = Tempfile.new(file_type.to_s, get_temp_directory)
       FileUtils.rm temp_file.path
       
       stream = ::Zip::OutputStream.write_buffer do |zos|
@@ -325,7 +337,6 @@ module NmDatafile
     # This method peers through a zip binary data blob and returns a hash consisting of
     # { file_name1: file_data1, etc }
     def self.extract_entities_from_binary_data(binary_data)
-      require 'zip'
       binary_data_io = StringIO.new(binary_data)
       
       hash = {}
@@ -369,22 +380,7 @@ module NmDatafile
       binary_output = `#{alt}`
     end
     
-    # The zip implementation... should use 7z though and throw this out when it's done... or truecript or gpg...
-    def self.decode_protected_zip_old_zip_based(password, decryptable_portion)
-      encryptable_portion = Tempfile.new('encryptable_portion', "#{Rails.root}/tmp")
-      FileUtils.rm(encryptable_portion.path)
-      File.binwrite(encryptable_portion.path, decryptable_portion)
-      
-      supress_errors = "2>/dev/null"
-      decompress_zip_cmd = "funzip -'#{password}' '#{encryptable_portion.path}' #{supress_errors}"
-
-      clear_text_hash = `#{decompress_zip_cmd}`.chomp
-      
-      clear_text_hash = convert_newline_chars_back_to_symbols(clear_text_hash)
-      
-      FileUtils.rm(encryptable_portion.path)
-      clear_text_hash
-    end
+    
     
     
     def encode_string_as_password_protected(encryptable_portion, pass = nil)
@@ -399,61 +395,9 @@ module NmDatafile
       encrypted = bf.encrypt(encryptable_portion)
     end
     
-    # TODu:  rename to decode_string_as_password_protected
-    def self.decode_string_as_password_protected(password, decryptable_portion)
-      #require 'b_f'
-      bf = BF.new(password, true)
-      
-      bf.decrypt(decryptable_portion)
-    end
-    
-    
-    # Takes in a password and binary data of protected archive file and outputs
-    # a string of it's first entry in clear text which should be a hash
-    # of {:file_name, "file_data"}
-    def self.decode_password_protected_string(password, decryptable_portion)
-      decode = decode_string_as_password_protected(password, decryptable_portion)
-    end
     
     def decode_password_protected_string(password, decryptable_portion)
-      NMDatafile.decode_password_protected_string(password, decryptable_portion)
-    end
-    
-    # converts the string pairs into symbol/ string pairs
-    def self.symbolize_keys(decode)
-      p = {}
-      decode.each do |key_pair|
-        p.merge!( { key_pair[0].to_sym => key_pair[1] } )
-      end
-      p
-    end
-    
-    
-    
-    
-    def self.convert_newline_chars_back_to_symbols(clear_text_hash)
-      clear_text_hash.gsub("\n", "\\n")
-    end
-    
-    # I think 7z is considered secure and zip is considered insecure so write this
-    def self.decode_protected_7z(password, decryptable_portion)
-      # TODu: implement
-    end
-    
-    
-    def self.decrypt_encryptable_data!(password, hash)
-      return if hash[:crypt].nil?  # leave this function if there's no 'crypt' entry to decrypt
-      
-      decode = decode_string_into_NMDatafile_stores(password, hash[:crypt])
-      
-      hash.delete :crypt
-      
-      hash.merge!(decode)
-    end
-    
-    def self.decode_string_into_NMDatafile_stores(password, crypt_string)
-      decode = YAML::load decode_password_protected_string(password, crypt_string)
-      decode = symbolize_keys(decode)
+      NmDatafile.decode_password_protected_string(password, decryptable_portion)
     end
     
     def obfuscate_file_format
@@ -467,78 +411,16 @@ module NmDatafile
     
     def clean_encrypt_string(string)
       # Base64.encode64(encode_string_as_password_protected(string, @@unsecure_pass))
-      NMDatafile.fast_encrypt_string_with_pass(@@unsecure_pass, string)
+      NmDatafile.fast_encrypt_string_with_pass(@@unsecure_pass, string)
     end
     
     def clean_decrypt_string(string)
-      NMDatafile.clean_decrypt_string(string)
+      NmDatafile.clean_decrypt_string(string)
     end
     
     
     
-    def self.clean_decrypt_string(string)
-    #  string = Base64.decode64 string
-    #  decode_password_protected_string(@@unsecure_pass, string)
-      NMDatafile.fast_decrypt_string_with_pass(@@unsecure_pass, string)
-    end
     
-    
-    def self.fast_encrypt_string_with_pass(pass, string)
-      encoded_as_base64 = Base64.encode64(string)
-      rearranged = rearrangement(encoded_as_base64)
-      obfs = obfuscated_ending(rearranged)
-      Base64.encode64(obfs)
-    end
-    
-    def self.fast_decrypt_string_with_pass(pass, string)
-      obfs = Base64.decode64(string)
-      rearranged = obfuscated_ending_undo(obfs)
-      encoded_as_base64 = rearrangement_undo(rearranged)
-      Base64.decode64(encoded_as_base64)
-    end
-    
-    def self.rearrangement(s)
-      s = the_last_three_chars(s) + the_string_minus_the_last_three_chars(s)
-    end
-    
-    def self.rearrangement_undo(s)
-      s = the_string_minus_the_first_three_chars(s) + the_first_three_chars(s)
-    end
-    
-    
-    def self.obfuscated_ending(s)
-      junk = "tlD3=\n"
-      s + junk
-    end
-    
-    def self.obfuscated_ending_undo(s)
-      junk = "tlD3=\n"
-      s[0...(-1*junk.length)]
-    end
-    
-    # hide these somewhere, so ugly
-    def self.the_last_three_chars(s)
-      s[-3..-1]
-    end
-    
-    def self.the_first_three_chars(s)
-      s[0..3]
-    end
-    
-    def self.the_string_minus_the_last_three_chars(s)
-      s[0...-3]
-    end
-    
-    def self.the_string_minus_the_first_three_chars(s)
-      s[2..-1]
-    end
-    
-    
-    def self.encrypt_using_gpg(pass, string)
-      crypto = GPGME::Crypto.new :symmetric => true, :password => "gpgme"
-      encrypted_data = crypto.encrypt "string"
-      encrypted_data.read
-    end
     
     
     # `gpg -c --no-use-agent`
@@ -571,7 +453,7 @@ module NmDatafile
       
       simulated_response = [shipped_sales, erroneous_addresses, ready_for_shipment_batch]
       
-      nmd_address_completion = NMDatafile.new(:address_completion_file, *simulated_response)
+      nmd_address_completion = NmDatafile.new(:address_completion_file, *simulated_response)
     end
     
     def generate_upload_params(action = "upload_shippable_file")
@@ -678,7 +560,7 @@ module NmDatafile
     #################
     # render a count of sales
     def to_s
-      string = "NMDatafile:  \n"
+      string = "NmDatafile:  \n"
       data_collection_names.each.with_index do |collection_name, i|
         string << "  #{collection_name}: #{@data_collections[i].count}  \n"
       end
@@ -713,7 +595,7 @@ module NmDatafile
     #  batch checking, high conasence with Importable   #
     #####################################################
     
-    # Move to... NMDatafile
+    # Move to... NmDatafile
     def duplicate_batch?(previous_batch)
       return false if previous_batch.nil?
       
