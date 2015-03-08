@@ -102,38 +102,7 @@ module NmDatafile
     # Loading and Dumping Methods #
     ###############################
     
-    # (m)  Load: loads a file into memory as an NmDatafile
-    def self.Load(file_path)
-      zip_data = File.read(file_path)
-      LoadBinaryData(zip_data)
-    end
-    
-    def self.LoadBinaryData(binary_data)
-      hash = extract_entities_from_binary_data(binary_data)
-      
-      file_type = determine_file_type(hash[:attributes])
-      nmd = self.new( file_type )
-      
-      nmd.load_attributes(hash[:attributes]) unless hash[:attributes].nil?
-      nmd.load_encryption(hash[:encryption])
-      
-      nmd.load_data([*hash[:data_collections], *hash[:data_objects]])
-    end
-    
-    def self.determine_file_type(attributes_hash)
-      attributes_hash = YAML::load attributes_hash
-      attributes_hash["file_type"].to_sym
-    end
-    
-    def self.determine_password(hash)
-      d = YAML::load hash[:encryption]
-      clean_decrypt_string(d["password"])
-    end
-    
-    
-    
-    
-    
+    # notice migration to loading.rb
     
     def initialize(file_type, *args)
       set_file_type(file_type)

@@ -28,8 +28,10 @@ describe "nm_datafile" do
     str = nmd_shippable.save_to_string
 
     # TODO: actually test data and make more data in @sample_data
-    
-    
+  end
+
+  it "should toss me a binding" do
+    binding.pry
   end
 
 end
