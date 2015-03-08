@@ -9,5 +9,8 @@
 ** 4. Plug the gem into rails and see if it still works.
 
 
+### 0.0.0
+
+Skeleton
 
 
