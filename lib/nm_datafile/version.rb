@@ -1,3 +1,3 @@
 module NmDatafile
-  VERSION = "0.0.0"
+  VERSION = "0.0.0a"
 end
