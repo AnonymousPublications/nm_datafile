@@ -18,6 +18,10 @@ module NmDatafile
   def self.new(file_type, *args)
     NmDatafile.new(file_type, args)
   end
+
+  def self.hello
+    puts "hi"
+  end
   
 end
 
