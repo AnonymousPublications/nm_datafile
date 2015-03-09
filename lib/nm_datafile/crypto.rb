@@ -76,11 +76,13 @@ module NmDatafile
     end
     
     
-    
+    # This method needs to be available on the 
+    # NmDatafile module
     def clean_decrypt_string(string)
     #  string = Base64.decode64 string
     #  decode_password_protected_string(@@unsecure_pass, string)
-      NMDatafile.fast_decrypt_string_with_pass(@@unsecure_pass, string)
+      unsecure_pass = ::NmDatafile::FRONT_DOOR_KEY
+      fast_decrypt_string_with_pass(unsecure_pass, string)
     end
     
     

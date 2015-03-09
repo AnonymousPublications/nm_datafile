@@ -11,17 +11,16 @@ require 'nm_datafile/nm_datafile'
 
 
 module NmDatafile
-  # Your code goes here...
+  FRONT_DOOR_KEY = "$FrontDoorKey"  # Write to NmDatafile::FRONT_DOOR_KEY to set a symetric key
   
-  # extend Loading
+  extend DataLoading
+  extend Crypto
   
   def self.new(file_type, *args)
-    NmDatafile.new(file_type, args)
+    NmDatafile.new(file_type, *args)
   end
-
-  def self.hello
-    puts "hi"
-  end
+  
+  
   
 end
 

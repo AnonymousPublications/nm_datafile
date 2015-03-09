@@ -89,11 +89,10 @@ module NmDatafile
   # aNonyMousDatafile
   class NmDatafile
     @@schemas = ::NmDatafile::SCHEMA[:schemas]  # TODO:  move to initialize
-    @@unsecure_pass = $FrontDoorKey  # ppl with root access can decrypt nmd files
     @@clear_text_path = "clear_text_protected_nmd" # used for using system calls to decrypt and encrypt using a zip password
     attr_reader :file_type, :password
     
-    extend Crypto
+    # include Crypto
     
     
     
@@ -303,23 +302,7 @@ module NmDatafile
       stream.read
     end
     
-    # This method peers through a zip binary data blob and returns a hash consisting of
-    # { file_name1: file_data1, etc }
-    def self.extract_entities_from_binary_data(binary_data)
-      binary_data_io = StringIO.new(binary_data)
-      
-      hash = {}
-      ::Zip::InputStream.open(binary_data_io) do |io|
-        while (entry = io.get_next_entry)
-          hash[entry.name.to_sym] = io.read
-        end
-      end
-      
-      password = self.determine_password(hash)
-      
-      decrypt_encryptable_data!(password, hash)
-      hash
-    end
+    
     
     # Play:
     # Below will write to stdout as long as stdout isn't the terminal (so works in irb and ruby)
@@ -366,7 +349,7 @@ module NmDatafile
     
     
     def decode_password_protected_string(password, decryptable_portion)
-      NmDatafile.decode_password_protected_string(password, decryptable_portion)
+      ::NmDatafile.decode_password_protected_string(password, decryptable_portion)
     end
     
     def obfuscate_file_format
@@ -380,11 +363,12 @@ module NmDatafile
     
     def clean_encrypt_string(string)
       # Base64.encode64(encode_string_as_password_protected(string, @@unsecure_pass))
-      NmDatafile.fast_encrypt_string_with_pass(@@unsecure_pass, string)
+      ::NmDatafile.fast_encrypt_string_with_pass(::NmDatafile::FRONT_DOOR_KEY, string)
     end
     
+    # Crypto
     def clean_decrypt_string(string)
-      NmDatafile.clean_decrypt_string(string)
+      ::NmDatafile.clean_decrypt_string(string)
     end
     
     
