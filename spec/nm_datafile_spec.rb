@@ -45,7 +45,11 @@ describe "nm_datafile" do
     nmd.sales.should eq @sample_data.first
   end
   
-  
+  it "should be able to load in the attributes" do
+    nmd = NmDatafile::Load @binary_nmd_path
+    
+    nmd.file_type.should eq :shippable_file
+  end
 
 
 end

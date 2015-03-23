@@ -2,6 +2,10 @@ require 'json'
 require 'yaml'
 require 'zip'
 
+# require 'factory_girl'
+# require 'pry'; binding.pry
+# require File.expand_path('../../spec/factories/sales.rb', __FILE__)
+
 require 'nm_datafile/version'
 require 'nm_datafile/schema'
 require 'nm_datafile/b_f'
