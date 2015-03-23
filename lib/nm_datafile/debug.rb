@@ -1,5 +1,10 @@
 module NmDatafile
 
+  # Just a (drunken) note about all this stuff... This code, is specific to the rails app AnonymousPublications
+  # And is dependant on factory_girl, the factories defined in the rails app, and active record and also
+  # the sale model in AnonymousPubliactions.  That sucks (sux), right?  Yes.  
+  # To fix it, I should not have a #create_sale method, instead I should create those sales using Factories
+  # in the rails app, and then send those records in...  For now, this stuff is just going to sit here though
   module Debug
   
     ###################
@@ -65,7 +70,10 @@ module NmDatafile
       rfsb.delete
     end
     
-    # create's some sales, line_items and 
+    # create's n valid sales and e erroneous sales
+    # Line items are created in this process
+    # This is to be run form AnonymousPublications only
+    # until it gets 'the big refactor' 
     def create_sales_for_shippable_file(n, e=nil)
       
       if @file_type == :shippable_file
@@ -89,24 +97,6 @@ module NmDatafile
     end
     alias create_sales create_sales_for_shippable_file
     
-    def sale_with_1_book
-      {"address_id"=>7,
-       "created_at"=>"2015-03-23T04:13:51Z",
-       "currency_used"=>"BTC",
-       "delivery_acknowledged"=>nil,
-       "id"=>4,
-       "original_id"=>nil,
-       "prepped"=>false,
-       "ready_for_shipment_batch_id"=>nil,
-       "receipt_confirmed"=>"2015-03-23T04:13:51Z",
-       "sale_amount"=>"4500000.0",
-       "shipped"=>nil,
-       "shipping_amount"=>0.0,
-       "total_amount"=>"4500000.0",
-       "updated_at"=>"2015-03-23T04:13:51Z",
-       "user_id"=>4,
-       "utilized_bitcoin_wallet_id"=>1}
-    end
     
     # puts "Deprecated due to the test being specific to a kind of model and schema"
     def create_sales_and_return_data_address_completion_file(n, e)
