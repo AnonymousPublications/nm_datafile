@@ -1,4 +1,5 @@
 require 'json'
+require 'yaml'
 require 'zip'
 
 require 'nm_datafile/version'
@@ -12,6 +13,7 @@ require 'nm_datafile/nm_datafile'
 
 module NmDatafile
   FRONT_DOOR_KEY = "$FrontDoorKey"  # Write to NmDatafile::FRONT_DOOR_KEY to set a symetric key
+  @@symmetric_key = "$FrontDoorKey"
   
   extend DataLoading
   extend Crypto
@@ -20,6 +22,9 @@ module NmDatafile
     NmDatafile.new(file_type, *args)
   end
   
+  def self.set_symmetric_key(val)
+    
+  end
   
   
 end

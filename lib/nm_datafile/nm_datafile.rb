@@ -366,7 +366,8 @@ module NmDatafile
       ::NmDatafile.fast_encrypt_string_with_pass(::NmDatafile::FRONT_DOOR_KEY, string)
     end
     
-    # Crypto
+    # This redirects to the mixin used by Crypto
+    # ughhh.....
     def clean_decrypt_string(string)
       ::NmDatafile.clean_decrypt_string(string)
     end
