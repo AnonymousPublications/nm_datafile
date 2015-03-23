@@ -1,7 +1,11 @@
-### 0.0.1
+### TODO:
 
-* Create some tests
-  -
+* Created some tests
+  - Included tests that were in model/nm_datafile_spec.rb
+
+
+* Fix the way there's an nm_datafile class... :(
+* Define the class methods more clearly...
 
 * Handle $FrontDoorKey
   - When Crypto::clean_decrypt_string is called... it should be called on an instantiation
@@ -14,11 +18,8 @@
       - It's hard to tell what's an instance method and what's a class method
         with all the mixin usage...
       
-      
 
-* Fix the way there's an nm_datafile class... :(
-* Define the class methods more clearly... fuck!
-
+### 0.0.1
 
 * Code migrated into this repo
 * Pull out the class methods from the class
@@ -31,5 +32,3 @@
 ### 0.0.0
 
 Skeleton
-
-
