@@ -176,10 +176,7 @@ module NmDatafile
       @password = password
     end
     
-    # TODO del me
-    def version
-      "0.0.0"
-    end
+   
     
     def integrity_hash
       encryptable_portion = build_encryptable_portion
@@ -196,7 +193,7 @@ module NmDatafile
     
     def build_attributes
       hash = { file_type: @file_type
-                # build_date: Time.zone.now,           # TODu:  change me to the date the data was last modified...
+                # build_date: Time.zone.now,           # TODO:  change me to the date the data was last modified...
               }.to_json
     end
     

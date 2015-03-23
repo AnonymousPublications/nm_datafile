@@ -1,9 +1,5 @@
 ### TODO:
 
-* Created some tests
-  - Included tests that were in model/nm_datafile_spec.rb
-
-
 * Fix the way there's an nm_datafile class... :(
 * Define the class methods more clearly...
 
@@ -18,6 +14,14 @@
       - It's hard to tell what's an instance method and what's a class method
         with all the mixin usage...
       
+
+### 0.0.2
+
+* Created some tests
+  - Included tests that were in model/nm_datafile_spec.rb
+
+
+
 
 ### 0.0.1
 
