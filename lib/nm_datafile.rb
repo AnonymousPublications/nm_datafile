@@ -3,7 +3,7 @@ require 'yaml'
 require 'zip'
 
 # require 'factory_girl'
-# require 'pry'; binding.pry
+require 'pry';
 # require File.expand_path('../../spec/factories/sales.rb', __FILE__)
 
 require 'nm_datafile/version'
@@ -16,8 +16,7 @@ require 'nm_datafile/nm_datafile'
 
 
 module NmDatafile
-  FRONT_DOOR_KEY = "$FrontDoorKey"  # Write to NmDatafile::FRONT_DOOR_KEY to set a symetric key
-  @@symmetric_key = "$FrontDoorKey"
+  @@front_door_key = "$FrontDoorKey"
   
   extend DataLoading
   extend Crypto
@@ -30,6 +29,13 @@ module NmDatafile
     
   end
   
+  def self.front_door_key
+    @@front_door_key
+  end
+  
+  def self.front_door_key=(v)
+    @@front_door_key = v
+  end
   
 end
 

@@ -35,8 +35,7 @@ Or install it yourself as:
 
 ## Usage
 
-First define a file Schema.  
-For instance, if you wanted a file type called 'shippable_file' and you wanted it to have many records of 'sales', 'line_items', etc, 
+First define a file Schema.  For instance, if you wanted a file type called 'shippable_file' and you wanted it to have many records of 'sales', 'line_items', etc, 
 and you wanted your file to have a string of data named 'ready_for_shipment_batch', then you would define it like so. 
 
     $nm_datafile_schemas = { 
@@ -48,11 +47,43 @@ and you wanted your file to have a string of data named 'ready_for_shipment_batc
       }
     }
 
-TODO:  Specify encryption type on file as well...
+First define a schema for your NmDatafile.  For instance, if you wanted a file called 'data_file' and you just wanted a "strings" attribute where you can store an array of encrypted strings, then you could set the below schema.  
 
-Then you'd want to create the NMD file:
+    NmDatafile::SCHEMA = {
+      schemas: {
+        :data_file => {
+          data_collections: [:strings], # name the data that is input into the NMDatafile as an array
+          data_objects: [:file_owners_name]
+        }
+      }
+    }
 
-And finally save it as shown below:
+That's actually the default schema, so you don't need to set it, it's located in lib/nm_datafile/schema.rb, fyi :)
+
+Now that you've got a schema set up, you can start using your data and easily serialize data into an encrypted file format.  
+
+    nmd = NmDatafile.new(:data_file)
+    nmd.strings #=> []
+    nmd.strings << "hi"
+    nmd.file_owners_name = "dsj"
+    nmd.save_to_string # This is a binary string for programmers, you can write it to a file
+    nmd.save_to_file('/tmp/file.zip') # this saves your strings to a file
+    
+Ok, you've done all that, but your data is visible as that it's a zip file.  So to turn sneaky mode on, you'll want to     
+    
+    NmDatafile.Load('/tmp/secret_file')
+    
+    
+
+# TODO
+
+* Finish algo so it uses front door keys... encryption needs to be encrypted with the front door key 
+* Make it so the rails app sets up the schema file the proper way
+* Specify encryption type in file schema?  (symmetric vs asymmetric)
+* Allow exporting data as a stenographic cat.jpg file.  
+* Better API for adding a new schema, and better default
+* Bring in tests
+* Allow PGP to be used to encrypt the file
 
 
 ## Contributing

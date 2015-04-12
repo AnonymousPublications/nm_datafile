@@ -91,9 +91,10 @@ module NmDatafile
   # (m)  
   # aNonyMousDatafile
   class NmDatafile
-    @@schemas = ::NmDatafile::SCHEMA[:schemas]  # TODO:  move to initialize
     @@clear_text_path = "clear_text_protected_nmd" # used for using system calls to decrypt and encrypt using a zip password
+    
     attr_reader :file_type, :password
+    attr_accessor :schemas
     
     # include Crypto
     include Debug
@@ -106,6 +107,8 @@ module NmDatafile
     # notice migration to loading.rb
     
     def initialize(file_type, *args)
+      @front_door_key = ::NmDatafile.front_door_key
+      @schemas = ::NmDatafile::SCHEMA[:schemas]
       set_file_type(file_type)
       
       load_data(args)
@@ -216,7 +219,7 @@ module NmDatafile
     #######################
     
     def schema
-      @@schemas[@file_type]
+      @schemas[@file_type]
     end
     
     def data_collection_names

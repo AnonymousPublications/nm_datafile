@@ -81,7 +81,9 @@ module NmDatafile
     def clean_decrypt_string(string)
     #  string = Base64.decode64 string
     #  decode_password_protected_string(@@unsecure_pass, string)
-      unsecure_pass = ::NmDatafile::FRONT_DOOR_KEY
+      puts "Why is it decrypting files when I plug in the wrong key."
+      binding.pry
+      unsecure_pass = @front_door_key
       fast_decrypt_string_with_pass(unsecure_pass, string)
     end
     

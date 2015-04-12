@@ -79,7 +79,7 @@ module NmDatafile
     
     def clean_encrypt_string(string)
       # Base64.encode64(encode_string_as_password_protected(string, @@unsecure_pass))
-      ::NmDatafile.fast_encrypt_string_with_pass(::NmDatafile::FRONT_DOOR_KEY, string)
+      ::NmDatafile.fast_encrypt_string_with_pass(@front_door_key, string)
     end
     
     # This redirects to the mixin used by Crypto
