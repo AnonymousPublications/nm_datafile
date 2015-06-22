@@ -10,11 +10,14 @@ module NmDatafile
     end
     
     # TODO: Make lowercase
-    def load_binary_data(binary_data)
+    def load_binary_data(binary_data, symmetric_key = nil)
       hash = extract_entities_from_binary_data(binary_data)
       
-      file_type = determine_file_type(hash[:attributes])
-      nmd = NmDatafile.new( file_type )
+      config = { file_type: determine_file_type(hash[:attributes]),
+                 symmetric_key: symmetric_key.nil? ? FRONT_DOOR_KEY : symmetric_key
+      }
+      
+      nmd = NmDatafile.new( config )
       
       nmd.load_attributes(hash[:attributes]) unless hash[:attributes].nil?
       nmd.load_encryption(hash[:encryption])
@@ -28,7 +31,7 @@ module NmDatafile
     end
     
     
-    def determine_password(hash)
+    def determine_password(hash, symmetric_key = nil)
       d = YAML::load hash[:encryption]
       ::NmDatafile.clean_decrypt_string(d["password"])
     end

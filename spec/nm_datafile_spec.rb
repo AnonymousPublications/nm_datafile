@@ -74,9 +74,11 @@ describe "nm_datafile" do
   it "fast_encrypt_string_with_pass and fast_decrypt_string_with_pass reverse" do
     original_string = "hello"
     
-    encrypted_string = NmDatafile::fast_encrypt_string_with_pass($FrontDoorKey, original_string)
+    pass = NmDatafile::FRONT_DOOR_KEY
     
-    clear_text = NmDatafile::fast_decrypt_string_with_pass($FrontDoorKey, encrypted_string)
+    encrypted_string = NmDatafile::fast_encrypt_string_with_pass(pass, original_string)
+    
+    clear_text = NmDatafile::fast_decrypt_string_with_pass(pass, encrypted_string)
     
     clear_text.should eq original_string
   end

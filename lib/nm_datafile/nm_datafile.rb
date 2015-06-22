@@ -107,8 +107,9 @@ module NmDatafile
     
     # notice migration to loading.rb
     
-    def initialize(file_type, *args)
-      @front_door_key = ::NmDatafile.front_door_key
+    def initialize(config, *args)
+      file_type = config[:file_type]
+      @front_door_key = config[:symmetric_key]
       @schemas = ::NmDatafile::SCHEMA[:schemas]
       set_file_type(file_type)
       
