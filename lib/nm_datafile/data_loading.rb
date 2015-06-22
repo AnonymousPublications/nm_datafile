@@ -4,14 +4,14 @@ module NmDatafile
     
     # (m)  Load: loads a file into memory as an NmDatafile
     # TODO: Make lowercase
-    def Load(file_path)
+    def Load(file_path, symmetric_key)
       zip_data = File.read(file_path)
-      load_binary_data(zip_data)
+      load_binary_data(zip_data, symmetric_key)
     end
     
     # TODO: Make lowercase
-    def load_binary_data(binary_data, symmetric_key = nil)
-      hash = extract_entities_from_binary_data(binary_data)
+    def load_binary_data(binary_data, symmetric_key)
+      hash = extract_entities_from_binary_data(binary_data, symmetric_key)
       
       config = { file_type: determine_file_type(hash[:attributes]),
                  symmetric_key: symmetric_key.nil? ? FRONT_DOOR_KEY : symmetric_key
@@ -31,14 +31,14 @@ module NmDatafile
     end
     
     
-    def determine_password(hash, symmetric_key = nil)
+    def determine_password(hash, symmetric_key)
       d = YAML::load hash[:encryption]
-      ::NmDatafile.clean_decrypt_string(d["password"])
+      ::NmDatafile.clean_decrypt_string(d["password"], symmetric_key)
     end
     
     # This method peers through a zip binary data blob and returns a hash consisting of
     # { file_name1: file_data1, etc }
-    def extract_entities_from_binary_data(binary_data)
+    def extract_entities_from_binary_data(binary_data, symmetric_key)
       binary_data_io = StringIO.new(binary_data)
       
       hash = {}
@@ -48,7 +48,7 @@ module NmDatafile
         end
       end
       
-      password = self.determine_password(hash)
+      password = self.determine_password(hash, symmetric_key)
       
       decrypt_encryptable_data!(password, hash)
       hash

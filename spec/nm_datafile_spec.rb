@@ -11,6 +11,8 @@ describe "nm_datafile" do
     # 
     # if you change the encryption algo, recreate this file with the help of the first test
     @binary_nmd_path = 'spec/data/nmd_binary_string_w_2s_2li_2a_1ubws_1ep.zip' 
+    
+    @symmetric_key = "this_is_a_keythis_is_a_keythis_is_a_keythis_is_a_key"
   end
   
   it "should be able to create an nmd_file out of complicated data hashes and save it" do
@@ -22,7 +24,8 @@ describe "nm_datafile" do
     encryption_pairs = [{"created_at"=>"2015-03-23T01:55:04Z", "id"=>1, "original_id"=>nil, "private_key"=>nil, "public_key"=>"-----BEGIN PGP PUBLIC KEY BLOCK-----\nVersion: GnuPG v1.4.12 (GNU/Linux)\n\nmQENBFLm15sBCADGEjoJw/ATyPYC+3er/XiZsCCht6t1Kr8p6fXVI9h7cyvoTulM\n31iug8kFvIr/dggNtEVYjnzuk6ervf2mit5uw3wgs8BBDGOj7BLg6kfuEUjsRaRO\nlCNKKneuscCBvyDbilsnc9jOdc7Nz4wpa8nwLh9iM6GqcM90pClaGYsDAYSFL7Kz\nHiTkBeDeo6pQS2p7G7p+Fg498OrpvythBtwhNiVL01X8f2zaGhlkTaDThJm5qofG\nlal552FitRtJuwu6Tim2Fef2jqJoEb0Hxc4o59/kKm+hqYlW0p5qleKm/hNWDSp1\nFA4VlUP7IPqPa5mzrIIrpRhDRZaIkdGAqWchABEBAAG0EWFiY2RlIChhKSA8YUBi\nLmM+iQE4BBMBAgAiBQJS5tebAhsDBgsJCAcDAgYVCAIJCgsEFgIDAQIeAQIXgAAK\nCRAdhYud6iaPu+yoB/4lyX2WTLFQWKCYavU4OzSiRSwSg33LAa/hj9as4jDUErg0\nIPl2dm3QMpf57jny1stqEDAVBQ3eyff5LqmJnhf6YyfroyfCMuTbY4woNyaY2IC0\nXJlBdMlUAOoWcHZCfl4ud97vW+XfRky/uZsmjUBh5DymL2f0fVFxwIeXl/k0hOti\n0FY6l7EGl0I9MQp5dPdqJonsAv1KnjdclsqmLDu7cFWHNF+BHCTb3xkDs0kqShvs\nA8o8HrD/9kUxdRSVdO+VQrZaimI6XdNWHzI4pEYQHQtnZ0IA1aOyzcqWpyTSlyy8\n1QzyNAvXQ4gzrpqRwdrdqUjuEwUTJoLKRSyYQ8yCuQENBFLm15sBCADI6MESgCQH\nf2JIjsHk2owRMpEhjyr25pEktjTpf8zLy5LYwHgwZXwpc6zDnwMBV6PcaPI6ZTRF\nGfwY4GsL9DBLefbiZuvYghYi++cevG11V87XhoRx8u8FGPukjRyKs4gCTrHW2g9q\n8IES46GZalCkC4x8WDM68yWutO/22ie7eALjMU+Ju9lbrwUI4/uy6a9dQJLMPdXN\ncYnWQO/q/CpkcngnoKEjreJ9FszrdSFtd+cBoItknsX668Euf4IIPwCW/KUfGZMm\n/Js/3pZRQpqq+OryuKcB03YsMd5E/JE+DySUo19rPeA2xwXLlW5goA9JL0YCvqW/\ntmEwvwDoVlW5ABEBAAGJAR8EGAECAAkFAlLm15sCGwwACgkQHYWLneomj7tfowgA\ngKRy023Oa6rYKwEZlQRWc7gL27Z8V9vCFgBaMM4cNFqrKqY97VezZ6ldjYqd6AGJ\nGWbrG8SqVZ4ZyoksyWnweMYKqoRGIcX7LEuL97mc6W7bB5MRGL9zQRIxu0/KHVik\nVZ8PL3f4j4XdPuF0gRLPBIDOOZVGqf86NpnKLx1XEIaS/z3OqxyWkRR47oOquqpd\nNd4Gn1hDZlTgiSsaSf6aFdS6O2eDLaseZ2l0WgrWoUMjD5bzmKgpmaJAJ+CcfuvB\nP1O44KOH9l+pRzKCbr6nlfd8rbQ4kehjIaGchdehvLFv9WQWMH9uDkKgIu3BGGkp\nJ1TdTyeCX++qX0MtJ79GDw==\n=ToNu\n-----END PGP PUBLIC KEY BLOCK-----\n", "test_value"=>nil, "tested"=>nil, "updated_at"=>"2015-03-23T01:55:04Z"}]
     rfsb = {"acf_integrity_hash"=>nil, "batch_stamp"=>"2015-03-23_01.55.042", "created_at"=>"2015-03-23T01:55:04Z", "id"=>1, "original_id"=>nil, "sale_id"=>nil, "sf_integrity_hash"=>"c39c2be15b918842604261d8daf9ef1535842a7d558d0b6f2114a9404dd453d8", "updated_at"=>"2015-03-23T01:55:04Z"}
     
-    nm_data = NmDatafile.new(:shippable_file, sales, line_items, discounts, addresses, ubws, encryption_pairs, rfsb)
+    config = {file_type: :shippable_file, symmetric_key: @symmetric_key}
+    nm_data = NmDatafile.new(config, sales, line_items, discounts, addresses, ubws, encryption_pairs, rfsb)
     nm_data.sales.count.should eq 2
     
     #nm_data.save_to_file(@binary_nmd_path)
@@ -32,7 +35,7 @@ describe "nm_datafile" do
   it "should be able to load data from a binary string" do
     nmd_binary_string = File.read(@binary_nmd_path)
     
-    nmd_file = NmDatafile::load_binary_data nmd_binary_string
+    nmd_file = NmDatafile::load_binary_data nmd_binary_string, @symmetric_key
     
     sales = nmd_file.sales
     line_items = nmd_file.line_items
@@ -42,7 +45,8 @@ describe "nm_datafile" do
     encryption_pairs = nmd_file.encryption_pairs
     rfsb = nmd_file.ready_for_shipment_batch
     
-    nm_data = NmDatafile.new(:shippable_file, sales, line_items, discounts, addresses, ubws, encryption_pairs, rfsb)
+    config = {file_type: :shippable_file, symmetric_key: @symmetric_key}
+    nm_data = NmDatafile.new(config, sales, line_items, discounts, addresses, ubws, encryption_pairs, rfsb)
     
     nm_data.sales.count.should eq 2
     nm_data.ready_for_shipment_batch["batch_stamp"].should eq rfsb["batch_stamp"]
@@ -50,23 +54,24 @@ describe "nm_datafile" do
 
   it "should be able to load data from a path to a zip" do
     
-    nmd_string_loaded = NmDatafile::load_binary_data File.read(@binary_nmd_path)
+    nmd_string_loaded = NmDatafile::load_binary_data File.read(@binary_nmd_path), @symmetric_key
     
-    nmd_path_loaded = NmDatafile::Load @binary_nmd_path
+    nmd_path_loaded = NmDatafile::Load @binary_nmd_path, @symmetric_key
     
     nmd_string_loaded.sales.should eq nmd_path_loaded.sales
   end
 
   it "should be able to save data as a zip string" do
-    nmd_shippable = NmDatafile.new(:shippable_file, *@sample_data)
+    config = {file_type: :shippable_file, symmetric_key: @symmetric_key}
+    nmd_shippable = NmDatafile.new(config, *@sample_data)
     
-    nmd = NmDatafile::load_binary_data nmd_shippable.save_to_string
+    nmd = NmDatafile::load_binary_data nmd_shippable.save_to_string, @symmetric_key
     
     nmd.sales.should eq @sample_data.first
   end
   
   it "should be able to load in the attributes" do
-    nmd = NmDatafile::Load @binary_nmd_path
+    nmd = NmDatafile::Load @binary_nmd_path, @symmetric_key
     
     nmd.file_type.should eq :shippable_file
   end
@@ -84,11 +89,17 @@ describe "nm_datafile" do
   end
   
   it "should test simulate_address_completion_response(n_shipped)" do
-    nmd_file = NmDatafile::Load @binary_nmd_path
+    nmd_file = NmDatafile::Load @binary_nmd_path, @symmetric_key
     
     x = nmd_file.simulate_address_completion_response(5)
     
     x.sales.count.should eq 2
+  end
+  
+  it "should allow changing the symmetric key" do
+    
+    
+    
   end
   
 

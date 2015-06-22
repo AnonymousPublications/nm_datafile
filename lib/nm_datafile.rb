@@ -21,8 +21,9 @@ module NmDatafile
   extend Crypto
   extend FileEncoding
   
-  def self.new(file_type, *args)
-    config = {file_type: file_type, symmetric_key: FRONT_DOOR_KEY}
+  # The symmetric_key is the key that encrypts the key that encrypts the data...
+  def self.new(config, *args)
+    #config = {file_type: file_type, symmetric_key: FRONT_DOOR_KEY}
     NmDatafile.new(config, *args)
   end
   

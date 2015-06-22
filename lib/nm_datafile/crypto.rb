@@ -80,12 +80,12 @@ module NmDatafile
     
     # This method needs to be available on the 
     # NmDatafile module
-    def clean_decrypt_string(string)
-      fast_decrypt_string_with_pass(FRONT_DOOR_KEY, string)
+    def clean_decrypt_string(string, symmetric_key)
+      fast_decrypt_string_with_pass(symmetric_key, string)
     end
     
-    def clean_encrypt_string(string)
-      fast_encrypt_string_with_pass(FRONT_DOOR_KEY, string)
+    def clean_encrypt_string(string, symmetric_key)
+      fast_encrypt_string_with_pass(symmetric_key, string)
     end
     
     def fast_encrypt_string_with_pass(pass, string)
