@@ -6,11 +6,11 @@ module NmDatafile
     # TODO: Make lowercase
     def Load(file_path)
       zip_data = File.read(file_path)
-      LoadBinaryData(zip_data)
+      load_binary_data(zip_data)
     end
     
     # TODO: Make lowercase
-    def LoadBinaryData(binary_data)
+    def load_binary_data(binary_data)
       hash = extract_entities_from_binary_data(binary_data)
       
       file_type = determine_file_type(hash[:attributes])
@@ -30,7 +30,6 @@ module NmDatafile
     
     def determine_password(hash)
       d = YAML::load hash[:encryption]
-      
       ::NmDatafile.clean_decrypt_string(d["password"])
     end
     

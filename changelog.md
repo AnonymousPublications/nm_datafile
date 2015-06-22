@@ -13,6 +13,9 @@
         
       - It's hard to tell what's an instance method and what's a class method
         with all the mixin usage...
+
+
+* There's a bug where fast_decrypt_string_with_pass doesn't implement any kind of password for encryption/ decryption... 
       
 
 ### 0.0.2

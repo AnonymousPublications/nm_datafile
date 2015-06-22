@@ -51,6 +51,7 @@ module NmDatafile
       binary_output = `#{alt}`
     end
     
+    # TODu:  rename to encode_password_protected_string
     def encode_string_as_password_protected(encryptable_portion, pass = nil)
       #require 'b_f'
       
@@ -64,9 +65,10 @@ module NmDatafile
     end
 
     
-    def decode_password_protected_string(password, decryptable_portion)
-      ::NmDatafile.decode_password_protected_string(password, decryptable_portion)
-    end
+    # TODu: Make password the last parameter
+    #def decode_password_protected_string(password, decryptable_portion)
+    #  ::NmDatafile.decode_password_protected_string(password, decryptable_portion)
+    #end
     
     def obfuscate_file_format
       # TODu: implement me
@@ -77,16 +79,13 @@ module NmDatafile
     end
     
     
-    def clean_encrypt_string(string)
-      # Base64.encode64(encode_string_as_password_protected(string, @@unsecure_pass))
-      ::NmDatafile.fast_encrypt_string_with_pass(@front_door_key, string)
-    end
+    
     
     # This redirects to the mixin used by Crypto
     # ughhh.....
-    def clean_decrypt_string(string)
-      ::NmDatafile.clean_decrypt_string(string)
-    end
+    #def clean_decrypt_string(string)
+    #  ::NmDatafile.clean_decrypt_string(string)
+    #end
     
   end
 end

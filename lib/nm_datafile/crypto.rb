@@ -25,7 +25,9 @@ module NmDatafile
       #require 'b_f'
       bf = BF.new(password, true)
       
-      bf.decrypt(decryptable_portion)
+      clear_text = bf.decrypt(decryptable_portion)
+      
+      clear_text
     end
     
     
@@ -71,7 +73,10 @@ module NmDatafile
     end
     
     def decode_string_into_NMDatafile_stores(password, crypt_string)
+      binding.pry
       decode = YAML::load decode_password_protected_string(password, crypt_string)
+      # it's a zip needs bin write here?... TODu
+      File.binwrite('/tmp/comeseeme.zip', decode_password_protected_string(password, crypt_string))
       decode = symbolize_keys(decode)
     end
     
@@ -79,18 +84,16 @@ module NmDatafile
     # This method needs to be available on the 
     # NmDatafile module
     def clean_decrypt_string(string)
-    #  string = Base64.decode64 string
-    #  decode_password_protected_string(@@unsecure_pass, string)
-      puts "Why is it decrypting files when I plug in the wrong key."
-      binding.pry
-      unsecure_pass = @front_door_key
-      fast_decrypt_string_with_pass(unsecure_pass, string)
+      fast_decrypt_string_with_pass($FrontDoorKey, string)
     end
     
-    
+    def clean_encrypt_string(string)
+      fast_encrypt_string_with_pass($FrontDoorKey, string)
+    end
     
     def fast_encrypt_string_with_pass(pass, string)
-      encoded_as_base64 = Base64.encode64(string)
+      passworded_string = encode_string_as_password_protected(string, pass)
+      encoded_as_base64 = Base64.encode64(passworded_string)
       rearranged = rearrangement(encoded_as_base64)
       obfs = obfuscated_ending(rearranged)
       Base64.encode64(obfs)
@@ -100,8 +103,10 @@ module NmDatafile
       obfs = Base64.decode64(string)
       rearranged = obfuscated_ending_undo(obfs)
       encoded_as_base64 = rearrangement_undo(rearranged)
-      Base64.decode64(encoded_as_base64)
+      passworded_string = Base64.decode64(encoded_as_base64)
+      clear_text_string = decode_password_protected_string(pass, passworded_string)
     end
+    
     
     def rearrangement(s)
       s = the_last_three_chars(s) + the_string_minus_the_last_three_chars(s)

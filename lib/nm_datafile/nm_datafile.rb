@@ -99,6 +99,7 @@ module NmDatafile
     # include Crypto
     include Debug
     include FileEncoding
+    include Crypto
     
     ###############################
     # Loading and Dumping Methods #
@@ -125,7 +126,7 @@ module NmDatafile
     def load_encryption(encryption_data)
       d = YAML::load encryption_data
       @integrity_hash = d["integrity_hash"] unless d["integrity_hash"].nil?
-      @password = clean_decrypt_string(d["password"]) unless d["password"].nil?
+      @password = ::NmDatafile.clean_decrypt_string(d["password"]) unless d["password"].nil?
     end
     
     # (m)  load_data:  loads array of data into memory as an NmDatafile object

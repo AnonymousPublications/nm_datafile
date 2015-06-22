@@ -74,6 +74,11 @@ Ok, you've done all that, but your data is visible as that it's a zip file.  So 
     NmDatafile.Load('/tmp/secret_file')
     
     
+    
+# Testing Note
+
+Some cyphers are hardcoded in the tests... so if you make changes to the crypto algo, your tests will fail until you fix this...
+    
 
 # TODO
 
