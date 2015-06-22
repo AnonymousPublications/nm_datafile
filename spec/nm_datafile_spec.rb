@@ -83,6 +83,13 @@ describe "nm_datafile" do
     clear_text.should eq original_string
   end
   
+  it "should test simulate_address_completion_response(n_shipped)" do
+    nmd_file = NmDatafile::Load @binary_nmd_path
+    
+    x = nmd_file.simulate_address_completion_response(5)
+    
+    x.sales.count.should eq 2
+  end
   
 
 

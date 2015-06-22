@@ -34,8 +34,8 @@ module NmDatafile
       end
       
       simulated_response = [shipped_sales, erroneous_addresses, ready_for_shipment_batch]
-      
-      nmd_address_completion = NmDatafile.new(:address_completion_file, *simulated_response)
+      config = { file_type: :address_completion_file, symmetric_key: FRONT_DOOR_KEY}
+      nmd_address_completion = NmDatafile.new(config, *simulated_response)
     end
     
     def generate_upload_params(action = "upload_shippable_file")
