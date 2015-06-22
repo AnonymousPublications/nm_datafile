@@ -12,10 +12,25 @@
         - nm_datafile.rb
         
 
-### 0.0.3
+### 0.1.0
 
 * Fixed bug where fast_decrypt_string_with_pass doesn't implement any kind of password for encryption/ decryption...
-      
+
+How it is used in 0.0.1
+
+
+How it should be used in 0.1.0
+
+
+nm_data = NmData.new("this_is_a_key")
+
+nm_data.new_file(file_type, *args)
+
+nm_data.load_binary_data bin_data_string
+
+nm_data.load bin_path
+
+
 
 ### 0.0.2
 
