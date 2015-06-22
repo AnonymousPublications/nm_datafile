@@ -73,10 +73,7 @@ module NmDatafile
     end
     
     def decode_string_into_NMDatafile_stores(password, crypt_string)
-      binding.pry
       decode = YAML::load decode_password_protected_string(password, crypt_string)
-      # it's a zip needs bin write here?... TODu
-      File.binwrite('/tmp/comeseeme.zip', decode_password_protected_string(password, crypt_string))
       decode = symbolize_keys(decode)
     end
     
