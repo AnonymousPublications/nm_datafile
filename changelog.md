@@ -11,10 +11,10 @@
         - data_loading.rb
         - nm_datafile.rb
         
-      - It's hard to tell what's an instance method and what's a class method
-        with all the mixin usage...
 
+### 0.0.3
 
+* Fixed bug where fast_decrypt_string_with_pass doesn't implement any kind of password for encryption/ decryption...
       
 
 ### 0.0.2
@@ -22,7 +22,6 @@
 * Created some tests
   - Included tests that were in model/nm_datafile_spec.rb
 
-* Fixed bug where fast_decrypt_string_with_pass doesn't implement any kind of password for encryption/ decryption...
 
 
 
