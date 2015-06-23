@@ -91,20 +91,21 @@ describe "nm_datafile" do
   it "should test simulate_address_completion_response(n_shipped)" do
     nmd_file = NmDatafile::Load @binary_nmd_path, @symmetric_key
     
-    x = nmd_file.simulate_address_completion_response(5, @symmetric_key)
+    x = nmd_file.simulate_address_completion_response(5)
     
     x.sales.count.should eq 2
   end
   
+  it "should test generate_upload_params" do
+    nmd_file = NmDatafile::Load @binary_nmd_path, @symmetric_key
+  end
+  
   it "should fail when the wrong symmetric key is used" do
-    #nmd_file = NmDatafile::Load @binary_nmd_path, "this_is_a_keythis_is_a_be"
-    
     encrypted = ::NmDatafile.clean_encrypt_string("encrypt this string please", "this_is_a_keythi")
     
     expect {
       clear_text = ::NmDatafile.clean_decrypt_string(encrypted, "this_is_a_keythasdf")
     }.to raise_error
-    
   end
   
 

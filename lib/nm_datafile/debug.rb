@@ -19,7 +19,9 @@ module NmDatafile
     end
     
     # creates an address_completion file based on the contents of the current shippable_file object
-    def simulate_address_completion_response(n_shipped, symmetric_key)
+    def simulate_address_completion_response(n_shipped)
+      symmetric_key = @symmetric_key
+      
       raise "can't make an address_completion_response unless it's a shippable_file" if @file_type != :shippable_file
       setup_object_for_schema   # TODu:  I put this in, there was a bug in the test where it needs to be run... does it not run on init somehow?
       
@@ -32,7 +34,7 @@ module NmDatafile
           erroneous_addresses << { "id" => sale["id"] }
         end
       end
-      
+
       simulated_response = [shipped_sales, erroneous_addresses, ready_for_shipment_batch]
       config = { file_type: :address_completion_file, symmetric_key: symmetric_key}
       nmd_address_completion = NmDatafile.new(config, *simulated_response)

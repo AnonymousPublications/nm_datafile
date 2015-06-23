@@ -93,7 +93,7 @@ module NmDatafile
   class NmDatafile
     @@clear_text_path = "clear_text_protected_nmd" # used for using system calls to decrypt and encrypt using a zip password
     
-    attr_reader :file_type, :password
+    attr_reader :file_type, :password, :symmetric_key
     attr_accessor :schemas
     
     # include Crypto
@@ -109,7 +109,7 @@ module NmDatafile
     
     def initialize(config, *args)
       file_type = config[:file_type]
-      @front_door_key = config[:symmetric_key]
+      @symmetric_key = config[:symmetric_key]
       @schemas = ::NmDatafile::SCHEMA[:schemas]
       set_file_type(file_type)
       
@@ -127,7 +127,7 @@ module NmDatafile
     def load_encryption(encryption_data)
       d = YAML::load encryption_data
       @integrity_hash = d["integrity_hash"] unless d["integrity_hash"].nil?
-      @password = ::NmDatafile.clean_decrypt_string(d["password"], @front_door_key) unless d["password"].nil?
+      @password = ::NmDatafile.clean_decrypt_string(d["password"], @symmetric_key) unless d["password"].nil?
     end
     
     # (m)  load_data:  loads array of data into memory as an NmDatafile object
@@ -204,7 +204,7 @@ module NmDatafile
     
     def build_encryption
       hash = { integrity_hash: integrity_hash,
-               password: clean_encrypt_string(@password, @front_door_key)
+               password: clean_encrypt_string(@password, @symmetric_key)
              }.to_json
     end
     
