@@ -22,10 +22,7 @@ module NmDatafile
     
     # TODu:  rename to decode_string_as_password_protected
     def decode_string_as_password_protected(password, decryptable_portion)
-      #require 'b_f'
-      bf = BF.new(password, true)
-      
-      clear_text = bf.decrypt(decryptable_portion)
+      clear_text = Blowfish.decrypt(password, decryptable_portion)
       
       clear_text
     end

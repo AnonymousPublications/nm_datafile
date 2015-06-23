@@ -11,6 +11,9 @@
         - data_loading.rb
         - nm_datafile.rb
         
+* There's a bug in the BF module I think... the symmetric key is either too short, or doesn't play much of a role in encryption at all
+  - It's only accepting keys that are 16 chars long
+  - It doesn't matter what the key is...
 
 ### 0.1.0
 

@@ -28,8 +28,8 @@ describe "nm_datafile" do
     nm_data = NmDatafile.new(config, sales, line_items, discounts, addresses, ubws, encryption_pairs, rfsb)
     nm_data.sales.count.should eq 2
     
+    # uncomment to update file
     #nm_data.save_to_file(@binary_nmd_path)
-    
   end
   
   it "should be able to load data from a binary string" do
@@ -79,7 +79,7 @@ describe "nm_datafile" do
   it "fast_encrypt_string_with_pass and fast_decrypt_string_with_pass reverse" do
     original_string = "hello"
     
-    pass = NmDatafile::FRONT_DOOR_KEY
+    pass = @symmetric_key
     
     encrypted_string = NmDatafile::fast_encrypt_string_with_pass(pass, original_string)
     
@@ -91,14 +91,19 @@ describe "nm_datafile" do
   it "should test simulate_address_completion_response(n_shipped)" do
     nmd_file = NmDatafile::Load @binary_nmd_path, @symmetric_key
     
-    x = nmd_file.simulate_address_completion_response(5)
+    x = nmd_file.simulate_address_completion_response(5, @symmetric_key)
     
     x.sales.count.should eq 2
   end
   
-  it "should allow changing the symmetric key" do
+  it "should fail when the wrong symmetric key is used" do
+    #nmd_file = NmDatafile::Load @binary_nmd_path, "this_is_a_keythis_is_a_be"
     
+    encrypted = ::NmDatafile.clean_encrypt_string("encrypt this string please", "this_is_a_keythi")
     
+    expect {
+      clear_text = ::NmDatafile.clean_decrypt_string(encrypted, "this_is_a_keythasdf")
+    }.to raise_error
     
   end
   

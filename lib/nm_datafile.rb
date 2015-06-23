@@ -15,7 +15,7 @@ require 'nm_datafile/nm_datafile'
 
 
 module NmDatafile
-  FRONT_DOOR_KEY = "this_is_a_keythis_is_a_keythis_is_a_keythis_is_a_key"
+  #FRONT_DOOR_KEY = "this_is_a_keythis_is_a_keythis_is_a_keythis_is_a_key"
   
   extend DataLoading
   extend Crypto
@@ -23,7 +23,7 @@ module NmDatafile
   
   # The symmetric_key is the key that encrypts the key that encrypts the data...
   def self.new(config, *args)
-    #config = {file_type: file_type, symmetric_key: FRONT_DOOR_KEY}
+    #config = {file_type: file_type, symmetric_key: symmetric_key}
     NmDatafile.new(config, *args)
   end
   

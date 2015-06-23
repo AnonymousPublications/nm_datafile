@@ -59,9 +59,11 @@ module NmDatafile
       pish = pass unless pass.nil?
       raise "error, password given was too long, must be 56 or less chars" if pish.length > 56
       
-      bf = BF.new(pish, true)
+      #bf = BF.new(pish, true)
+      #encrypted = bf.encrypt(encryptable_portion)
+      encrypted = Blowfish.encrypt(pish, encryptable_portion)
       
-      encrypted = bf.encrypt(encryptable_portion)
+      encrypted
     end
     
     def obfuscate_file_format

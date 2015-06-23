@@ -14,7 +14,7 @@ module NmDatafile
       hash = extract_entities_from_binary_data(binary_data, symmetric_key)
       
       config = { file_type: determine_file_type(hash[:attributes]),
-                 symmetric_key: symmetric_key.nil? ? FRONT_DOOR_KEY : symmetric_key
+                 symmetric_key: symmetric_key
       }
       
       nmd = NmDatafile.new( config )
