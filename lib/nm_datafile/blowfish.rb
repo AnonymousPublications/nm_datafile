@@ -1,4 +1,4 @@
-# https://gist.github.com/nono/2995118
+# http://philtoland.com/post/807114394/simple-blowfish-encryption-with-ruby#notes
 
 require "openssl"
 

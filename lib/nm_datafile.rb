@@ -4,7 +4,7 @@ require 'zip'
 
 require 'nm_datafile/version'
 require 'nm_datafile/schema'
-require 'nm_datafile/b_f'
+require 'nm_datafile/blowfish'
 require 'nm_datafile/data_loading'
 require 'nm_datafile/crypto'
 require 'nm_datafile/nm_datafile'

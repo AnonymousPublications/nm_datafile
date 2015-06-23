@@ -1,23 +1,12 @@
 ### TODO:
 
 * Fix the way there's an nm_datafile class... :(
-* Define the class methods more clearly...
+* Define the methods as static methods to make more clear where everything is
 
-* Handle $FrontDoorKey
-  - When Crypto::clean_decrypt_string is called... it should be called on an instantiation
-    that has a symmetric_key set
-    - it should also raise an exception if that instance variable isn't set
-      - Crypto::clean_decrypt_string is only used from within the gem!
-        - data_loading.rb
-        - nm_datafile.rb
         
-* There's a bug in the BF module I think... the symmetric key is either too short, or doesn't play much of a role in encryption at all
-  - It's only accepting keys that are 16 chars long
-  - It doesn't matter what the key is...
 
 ### 0.1.0
 
-* Fixed bug where fast_decrypt_string_with_pass doesn't implement any kind of password for encryption/ decryption...
 
 How it is used in 0.0.1
 
@@ -32,6 +21,13 @@ nm_data.new_file(file_type, *args)
 nm_data.load_binary_data bin_data_string
 
 nm_data.load bin_path
+
+
+### 0.0.3
+
+* Fixed bug where fast_decrypt_string_with_pass doesn't implement any kind of password for encryption/ decryption...
+* Fixed bug in the BF module by replacing it with better code
+* Handle $FrontDoorKey
 
 
 
